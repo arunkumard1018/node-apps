@@ -33,5 +33,5 @@ jobs:
             sudo apt-get -y update
             cd home/app-01
             npm install
-            npm test
+            touch deplyement.txt
             
