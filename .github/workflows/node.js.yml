@@ -13,28 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Backend deployment steps
-    # - name: Install dependencies for the server
-    #   working-directory: ./app-01
-    #   run: npm install
-
-    # - name: Run server tests
-    #   working-directory: ./server
-    #   run: npm test
-
-    # - name: Build the server
-    #   working-directory: ./server
-    #   run: npm run build
-
-    - name: Get server version from package.json
-      id: get_version
-      working-directory: ./server
-      run: | 
-        echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-        echo "Application version"
-        VERSION=$(jq -r .version package.json)
-        echo $VERSION
-
 
 # trnsfering files to ec2 
     - name: Deploy server to EC2
