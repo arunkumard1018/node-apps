@@ -1,33 +1,35 @@
-name: Deploy to EC2 and Push to S3
+name: Push-to-EC2
 
+# Trigger deployment only on push to main branch
 on:
   push:
     branches:
-      - main 
+      - main
 
 jobs:
-  build:
+  deploy:
+    name: Deploy to EC2 on master branch push
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      # Decode EC2 Key
-    - name: Decode EC2 Key
-      run: echo ${{ secrets.EC2_KEY }} | base64 --decode > ec2_key.pem
+      - name: Checkout the files
+        uses: actions/checkout@v2
 
-    # Add EC2 host to known hosts
-    - name: Add EC2 host to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Deploy to Server 1
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }}
+          REMOTE_HOST: ${{ secrets.EC2_HOST }}
+          REMOTE_USER: ${{ secrets.EC2_USER }}
+          TARGET: ${{ secrets.TARGET_DIR }}
 
-    - name: Deploy server to EC2
-      env:
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-        EC2_USER: ${{ secrets.EC2_USER }}
-      run: |
-        scp -i ec2_key.pem -r ./server $EC2_USER@$EC2_HOST:/home/ubuntu/nodejs-app
-
-    - name: Cleanup
-      run: rm -f ec2_key.pem
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo apt-get -y update
+            cd home
+            sudo mv * /var/www/html
