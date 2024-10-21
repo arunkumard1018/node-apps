@@ -31,5 +31,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo apt-get -y update
-            cd home
-            sudo mv * /var/www/html
+            cd home/app-01
+            npm install
+            npm test
+            
