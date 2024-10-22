@@ -12,16 +12,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the files
-        uses: actions/checkout@v2
+      - name: Checkout the files    
+      - uses: actions/checkout@v3
+      
+      # Install and Test Node Js App
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      - name: Install npm dependencies
+        run: npm install
+        
+      - name: Run Test
+        run : npm run test
+        
+      - name: Run Build
+        run: npm run build --if-present
 
+      - name: show PWD
+        run: pwd
+      
       - name: Deploy to Server 1
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }}
           REMOTE_HOST: ${{ secrets.EC2_HOST }}
           REMOTE_USER: ${{ secrets.EC2_USER }}
+          SOURCE: "app-01/"
           TARGET: ${{ secrets.TARGET_DIR }}
+          EXCLUDE: "/node-modules/ /node_modules/"
 
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
@@ -30,8 +49,15 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            sudo apt-get -y update
             cd home/app-01
-            npm install
-            touch deplyement.txt
+            echo "Deployment updated on $(date '+%Y-%m-%d %H:%M:%S') by ${{ github.actor }}" >> ci-info.txt
+            
+         # with:
+         #  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+         #  ARGS: "-rlgoDzvc -i --delete"
+         #  SOURCE: "dist/"
+         #  REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+         #  REMOTE_USER: ${{ secrets.REMOTE_USER }}
+         #  TARGET: ${{ secrets.REMOTE_TARGET }}
+         #  EXCLUDE: "/dist/, /node_modules/"
             
