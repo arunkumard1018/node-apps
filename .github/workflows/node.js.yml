@@ -44,7 +44,7 @@ jobs:
           TARGET: ${{ secrets.TARGET_DIR }}
           SOURCE: "app-01/"
           EXCLUDE: "/node-modules/ /node_modules/"
-          if: ${{ success() }}
+        if: ${{ success() }}
 
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
