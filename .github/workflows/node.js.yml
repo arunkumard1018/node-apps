@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout the files    
       - uses: actions/checkout@v3
-      
-      # Install and Test Node Js App
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
