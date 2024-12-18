@@ -20,7 +20,7 @@ app.use(logReqRes())
 /* Middleware to Parse Json Data */
 app.use(express.json());
 
-/**View Engine middleware for EJS */
+
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
