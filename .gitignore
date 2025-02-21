@@ -3,3 +3,4 @@
 sretup.yml
 /.env
 /node_modules
+.secrets
