@@ -1,6 +1,4 @@
 /roadmap
 .env
-sretup.yml
 /.env
 /node_modules
-.secrets
